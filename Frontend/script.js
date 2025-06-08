@@ -1,6 +1,33 @@
+const apiBaseUrl = "http://localhost:8080";
+const wsUrl = "ws://localhost:8080/ws/graph_explore";
+let socket;
+
 let currentGridSize = 10;
 let currentDrawMode = null;
 let isPointerDown = false;
+
+
+function openWebSocket() {
+    socket = new WebSocket(wsUrl);
+
+    socket.onopen = function(event) {
+        console.log("WebSocket is connected meow meow");
+    };
+
+    socket.onmessage = processGrid;
+
+    socket.onerror = function(error) {
+        console.log('WebSocket Error:', error);
+    };
+
+    socket.onclose = function(event) {
+        console.log('WebSocket connection closed');
+    };
+}
+
+function processGrid(event){
+
+}
 
 function setDrawMode(mode) {
     currentDrawMode = mode;
@@ -139,6 +166,8 @@ function initialize(){
     // Initialize grid
     generateGrid();
     setDrawMode('black'); // Set default mode
+
+    openWebSocket();
 }
 
     
