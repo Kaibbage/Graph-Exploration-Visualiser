@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Dynamic NxN Grid</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="grid" id="grid"></div>
+    <div class="controls">
+      <div class="control-group">
+        <label for="gridSize">Grid Size (N):</label>
+        <input type="number" id="gridSize" min="1" max="50" value="10" />
+        <button id="generateBtn">Generate Grid</button>
+      </div>
+      
+      <div class="control-group">
+        <label>Drawing Modes:</label>
+        <button id="blackModeBtn">Black</button>
+        <button id="blueModeBtn">Blue</button>
+        <button id="redModeBtn">Red</button>
+        <button id="yellowModeBtn">Yellow</button>
+        <button id="whiteModeBtn">White (Eraser)</button>
+      </div>
+      
+      <div class="control-group">
+        <label>Actions:</label>
+        <button id="clearBtn">Clear Grid</button>
+        <button id="showValuesBtn">Show Cell Values</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

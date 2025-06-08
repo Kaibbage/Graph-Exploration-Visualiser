@@ -1,0 +1,120 @@
+body {
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #d0f8ce44;
+    font-family: sans-serif;
+    touch-action: manipulation;
+}
+.container {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
+}
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.grid {
+    display: grid;
+    width: 600px;
+    height: 600px;
+    gap: 0;
+    touch-action: none;
+}
+.cell {
+    background-color: white;
+    border: 1px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    box-sizing: border-box;
+    user-select: none;
+    position: relative;
+}
+.cell.green-circle::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-color: #00ff00;
+    opacity: 0.7;
+    pointer-events: none;
+}
+.black {
+    background-color: black;
+    color: white;
+}
+.blue {
+    background-color: #4285f4;
+    color: white;
+}
+.red {
+    background-color: #ea4335;
+    color: white;
+}
+.yellow {
+    background-color: #fbbc05;
+    color: black;
+}
+.white {
+    background-color: white;
+    color: black;
+}
+.draw-mode-black {
+    background-color: #333;
+    color: white;
+}
+.draw-mode-blue {
+    background-color: #4285f4;
+    color: white;
+}
+.draw-mode-red {
+    background-color: #ea4335;
+    color: white;
+}
+.draw-mode-yellow {
+    background-color: #fbbc05;
+    color: black;
+}
+.draw-mode-white {
+    background-color: white;
+    border: 2px solid #333;
+    color: black;
+}
+.draw-mode-green {
+    background-color: #a5d6a7;
+    color: black;
+}
+.active-mode {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    touch-action: manipulation;
+}
+button:active {
+    transform: scale(0.98);
+}
+input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
