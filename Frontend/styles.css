@@ -53,6 +53,16 @@ body {
     opacity: 0.7;
     pointer-events: none;
 }
+.cell.dark-green-circle::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    border-radius: 50%;
+    background-color: #006400; /* Dark green */
+    opacity: 0.7;
+    pointer-events: none;
+}
 .black {
     background-color: black;
     color: white;
@@ -97,6 +107,22 @@ body {
 .draw-mode-green {
     background-color: #a5d6a7;
     color: black;
+}
+.orange {
+    background-color: orange;
+    color: black;
+}
+.purple {
+    background-color: purple;
+    color: white;
+}
+.draw-mode-orange {
+    background-color: orange;
+    color: black;
+}
+.draw-mode-purple {
+    background-color: purple;
+    color: white;
 }
 .active-mode {
     transform: scale(1.05);

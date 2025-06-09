@@ -27,7 +27,26 @@ public class ParseUtils {
     public static String createSendBackString(List<int[]> explored, List<int[]> path, boolean done){
         StringBuilder sb = new StringBuilder();
 
-        return "";
+        if(done){
+            sb.append("done");
+        }
+        else{
+            sb.append("not");
+        }
+        sb.append("::");
+
+        for(int[] exploredRC: explored){
+            sb.append(exploredRC[0] + " " + exploredRC[1] + "|");
+        }
+        sb.deleteCharAt(sb.length()-1);
+        sb.append("::");
+
+        for(int[] pathRC: path){
+            sb.append(pathRC[0] + " " + pathRC[1] + "|");
+        }
+        sb.deleteCharAt(sb.length()-1);
+
+        return sb.toString();
 
     }
 }

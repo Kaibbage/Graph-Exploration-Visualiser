@@ -10,7 +10,8 @@ public class GraphAlgorithms {
 
 
     public void dijkstra(int[][] grid) throws InterruptedException {
-        Thread.sleep(1000);
+        int n = grid.length;
+
     }
 
 
