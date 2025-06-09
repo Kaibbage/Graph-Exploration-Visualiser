@@ -26,8 +26,16 @@ function openWebSocket() {
 }
 
 function processGrid(event){
+    let str = event.data;
+    let threePart = str.split("::");
 
+    let code = twoPart[0];
+    let explored = twoPart[1]; //red dots?
+    let path = threePart[2]; //green dots
+
+    
 }
+
 
 function setDrawMode(mode) {
     currentDrawMode = mode;
@@ -144,6 +152,65 @@ function setButtonAction(colour){
     });
 }
 
+function getIntValueFromColour(colour){
+    if(colour == "white"){
+        return 1;
+    }
+    else if(colour == "black"){
+        return 10_000;
+    }
+    else if(colour == "blue"){
+        return 10;
+    }
+    else if(colour == "red"){
+        return 5;
+    }
+    else if(colour == "yellow"){
+        return 2
+    }
+    else{
+        return 10_000;
+    }
+}
+
+function startSolving(){
+    let sentString = currentGridSize.toString() + "::";
+    for (let row = 0; row < currentGridSize; row++) {
+        for (let col = 0; col < currentGridSize; col++) {
+            let cell = document.getElementById(`cell-${row}-${col}`);
+            let colourValue = cell.dataset.color;
+            let colourValueString = getIntValueFromColour(colourValue).toString();
+
+            sentString += colourValueString + " ";
+        }
+        sentString += "| ";
+    }
+    console.log(sentString);
+    sendToBackend(sentString);
+}
+
+async function sendToBackend(dataAsString) {
+    const data = { input: dataAsString };
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/start-solving`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data), // Convert the payload to JSON
+        });
+
+        const result = await response.text(); // Extract result
+        console.log(result);
+        return result; // Return the result, unnecessary here but we keep for fun
+
+    } catch (error) {
+        console.error("Error:", error);
+        throw error; // Re-throw the error if needed
+    }
+}
+
 
 
 function initialize(){
@@ -155,6 +222,7 @@ function initialize(){
     document.getElementById('generateBtn').addEventListener('pointerdown', generateGrid);
     document.getElementById('clearBtn').addEventListener('pointerdown', clearGrid);
     document.getElementById('showValuesBtn').addEventListener('pointerdown', showCellValues);
+    document.getElementById('solveButton').addEventListener('pointerdown', startSolving);
 
     // Color mode buttons
     setButtonAction('black');
