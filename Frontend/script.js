@@ -32,8 +32,8 @@ function processGrid(event){
     let str = event.data;
     let threePart = str.split("::");
 
-    let code = twoPart[0];
-    let explored = twoPart[1]; //dark green dots?
+    let code = threePart[0];
+    let explored = threePart[1]; //dark green dots?
     let path = threePart[2]; //green dots
 
     clearAllCircles();
@@ -49,6 +49,7 @@ function processGrid(event){
 }
 
 function fillExploredDarkGreen(exploredArray){
+    console.log(exploredArray);
     exploredArray.forEach(function(coord){
         let row = coord[0];
         let col = coord[1];
@@ -68,7 +69,7 @@ function fillPathGreen(pathArray){
 
 //takes coordinate string and turns it into 2d array like [[0, 0], [1, 0], [1, 1]]
 function processCoordinates(coords){
-    let individualCoords = coords.split(" ");
+    let individualCoords = coords.split("|");
 
     let coordsArray = [];
 
@@ -117,11 +118,20 @@ function setDrawMode(mode) {
 function clearGrid() {
     const cells = document.querySelectorAll('.cell');
     cells.forEach(cell => {
-        cell.classList.remove('black', 'blue', 'red', 'yellow', 'green-circle', 'dark-green-circle');
-        cell.dataset.color = 'white';
-        cell.textContent = "";
+        clearCell(cell);
     });
+
+    // Reset orange to top-left
+    const topLeft = document.getElementById("cell-0-0");
+    updateCellColor(topLeft, "orange");
+    orangeCellId = topLeft.id;
+
+    // Reset purple to bottom-right
+    const bottomRight = document.getElementById(`cell-${currentGridSize - 1}-${currentGridSize - 1}`);
+    updateCellColor(bottomRight, "purple");
+    purpleCellId = bottomRight.id;
 }
+
 
 
 function clearAllCircles() {
@@ -139,22 +149,17 @@ function showCellValues() {
     });
 }
 
+function clearCell(cell){
+    cell.classList.remove('black', 'blue', 'red', 'yellow', 'orange', 'purple','green-circle', 'dark-green-circle');
+    cell.dataset.color = 'white';
+}
+
 function updateCellColor(cell, color) {
-    cell.classList.remove('black', 'blue', 'red', 'yellow', 'orange', 'purple');
-    if (color === 'white') {
-        cell.classList.remove('green-circle');
-    } else {
-        cell.classList.add(color);
-    }
-
-    cell.dataset.color = color;
-
     // Ensure only one orange or purple cell
     if (color === 'orange') {
         if (orangeCellId && orangeCellId !== cell.id) {
             const prev = document.getElementById(orangeCellId);
-            prev.classList.remove('orange');
-            prev.dataset.color = 'white';
+            clearCell(prev);
         }
         orangeCellId = cell.id;
     }
@@ -162,23 +167,28 @@ function updateCellColor(cell, color) {
     if (color === 'purple') {
         if (purpleCellId && purpleCellId !== cell.id) {
             const prev = document.getElementById(purpleCellId);
-            prev.classList.remove('purple');
-            prev.dataset.color = 'white';
+            clearCell(prev);
         }
         purpleCellId = cell.id;
     }
+
+    clearCell(cell);
+    if (color !== 'white') {
+        cell.classList.add(color);
+    }
+
+    cell.dataset.color = color;
+
 }
 
 function addGreenCircle(cell) {
-    if (!cell.classList.contains('green-circle')) {
-        cell.classList.add('green-circle');
-    }
+    cell.classList.remove('dark-green-circle');
+    cell.classList.add('green-circle');
 }
 
 function addDarkGreenCircle(cell) {
-    if (!cell.classList.contains('dark-green-circle')) {
-        cell.classList.add('dark-green-circle');
-    }
+    cell.classList.remove('green-circle');
+    cell.classList.add('dark-green-circle');
 }
 
 function colorPointerDown(e) {
@@ -256,10 +266,10 @@ function getIntValueFromColour(colour){
     else if(colour == "yellow"){
         return 2
     }
-    else if(colour == "orange"){
+    else if(colour == "orange"){ //start
         return -1;
     }
-    //purple
+    //purple end
     else{
         return -2;
     }

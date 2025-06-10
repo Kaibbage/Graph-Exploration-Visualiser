@@ -36,11 +36,9 @@ public class GraphExploreController {
     @PostMapping("/start-solving")
     public String startSolving(@RequestBody InputRequest request) {
         String input = request.getInput();
-        System.out.println(input);
 
         int[][] grid = ParseUtils.getGridFromString(input);
 
-        System.out.println(Arrays.deepToString(grid));
         new Thread(() -> {
             try {
                 graphAlgorithms.dijkstra(grid);
@@ -53,34 +51,13 @@ public class GraphExploreController {
         return "Shortest Path solving started";
     }
 
-    public boolean dijkstra(int[][] grid){
-        int n = grid.length;
 
-        return true;
-    }
-
-
-//
-//    @PostMapping("/generate-random")
-//    public String generateRandom() {
-//        int numNumbers = ((int) (Math.random() * 30)) + 10;
-//
-//        System.out.println(numNumbers);
-//
-//        char[][] grid = generateRandomGrid(numNumbers);
-//
-//
-//        String stringGrid = getStringFromGrid(grid);
-//
-//        return stringGrid;
-//    }
 
 
     // Method to send update to the frontend via WebSocket
     private void sendUpdateToFrontend(String value) {
         if (webSocketHandler != null) {
             webSocketHandler.sendUpdate(value);
-            System.out.println(value);
         }
     }
 
