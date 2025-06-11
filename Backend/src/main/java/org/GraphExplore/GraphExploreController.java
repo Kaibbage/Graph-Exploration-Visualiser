@@ -33,8 +33,8 @@ public class GraphExploreController {
 
 
 
-    @PostMapping("/start-solving")
-    public String startSolving(@RequestBody InputRequest request) {
+    @PostMapping("/start-solving-dijkstra")
+    public String startSolvingDijkstra(@RequestBody InputRequest request) {
         String input = request.getInput();
 
         int[][] grid = ParseUtils.getGridFromString(input);
@@ -42,6 +42,25 @@ public class GraphExploreController {
         new Thread(() -> {
             try {
                 graphAlgorithms.dijkstra(grid);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+
+        return "Shortest Path solving started";
+    }
+
+
+    @PostMapping("/start-solving-astar")
+    public String startSolvingAstar(@RequestBody InputRequest request) {
+        String input = request.getInput();
+
+        int[][] grid = ParseUtils.getGridFromString(input);
+
+        new Thread(() -> {
+            try {
+                graphAlgorithms.astar(grid);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

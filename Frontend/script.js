@@ -141,14 +141,6 @@ function clearAllCircles() {
 }
 
 
-function showCellValues() {
-    const cells = document.querySelectorAll('.cell');
-    cells.forEach(cell => {
-        const color = cell.dataset.color || 'white';
-        cell.textContent = color;
-    });
-}
-
 function clearCell(cell){
     cell.classList.remove('black', 'blue', 'red', 'yellow', 'orange', 'purple','green-circle', 'dark-green-circle');
     cell.dataset.color = 'white';
@@ -275,7 +267,7 @@ function getIntValueFromColour(colour){
     }
 }
 
-function startSolving(){
+function getGridString(){
     let sentString = currentGridSize.toString() + "::";
     for (let row = 0; row < currentGridSize; row++) {
         for (let col = 0; col < currentGridSize; col++) {
@@ -287,15 +279,46 @@ function startSolving(){
         }
         sentString += "| ";
     }
-    console.log(sentString);
-    sendToBackend(sentString);
+    return sentString;
 }
 
-async function sendToBackend(dataAsString) {
+function startSolvingDijkstra(){
+    let sentString = getGridString();
+    sendToBackendDijkstra(sentString);
+}
+
+function startSolvingAstar(){
+    let sentString = getGridString();
+    sendToBackendAstar(sentString);
+}
+
+async function sendToBackendDijkstra(dataAsString) {
     const data = { input: dataAsString };
 
     try {
-        const response = await fetch(`${apiBaseUrl}/start-solving`, {
+        const response = await fetch(`${apiBaseUrl}/start-solving-dijkstra`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data), // Convert the payload to JSON
+        });
+
+        const result = await response.text(); // Extract result
+        console.log(result);
+        return result; // Return the result, unnecessary here but we keep for fun
+
+    } catch (error) {
+        console.error("Error:", error);
+        throw error; // Re-throw the error if needed
+    }
+}
+
+async function sendToBackendAstar(dataAsString) {
+    const data = { input: dataAsString };
+
+    try {
+        const response = await fetch(`${apiBaseUrl}/start-solving-astar`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -323,8 +346,9 @@ function initialize(){
     // Initialize buttons with event listeners
     document.getElementById('generateBtn').addEventListener('pointerdown', generateGrid);
     document.getElementById('clearBtn').addEventListener('pointerdown', clearGrid);
-    document.getElementById('showValuesBtn').addEventListener('pointerdown', showCellValues);
-    document.getElementById('solveButton').addEventListener('pointerdown', startSolving);
+    document.getElementById('showValuesBtn').addEventListener('pointerdown', clearAllCircles);
+    document.getElementById('solveButtonDijkstra').addEventListener('pointerdown', startSolvingDijkstra);
+    document.getElementById('solveButtonAstar').addEventListener('pointerdown', startSolvingAstar);
 
     // Color mode buttons
     setButtonAction('black');
