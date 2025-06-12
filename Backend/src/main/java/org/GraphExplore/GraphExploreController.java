@@ -70,6 +70,60 @@ public class GraphExploreController {
         return "Shortest Path solving started";
     }
 
+    @PostMapping("/start-solving-bfs")
+    public String startSolvingBFS(@RequestBody InputRequest request) {
+        String input = request.getInput();
+
+        int[][] grid = ParseUtils.getGridFromString(input);
+
+        new Thread(() -> {
+            try {
+                graphAlgorithms.bfs(grid);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+
+        return "Shortest Path solving started";
+    }
+
+    @PostMapping("/start-solving-dfs")
+    public String startSolvingDFS(@RequestBody InputRequest request) {
+        String input = request.getInput();
+
+        int[][] grid = ParseUtils.getGridFromString(input);
+
+        new Thread(() -> {
+            try {
+                graphAlgorithms.dfsParent(grid);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+
+        return "Shortest Path solving started";
+    }
+
+//    @PostMapping("/start-solving-randomdfs")
+//    public String startSolvingRandomDFS(@RequestBody InputRequest request) {
+//        String input = request.getInput();
+//
+//        int[][] grid = ParseUtils.getGridFromString(input);
+//
+//        new Thread(() -> {
+//            try {
+//                graphAlgorithms.randomDfsParent(grid);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).start();
+//
+//
+//        return "Shortest Path solving started";
+//    }
+
 
 
 

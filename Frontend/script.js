@@ -282,21 +282,16 @@ function getGridString(){
     return sentString;
 }
 
-function startSolvingDijkstra(){
+function startSolving(algo){
     let sentString = getGridString();
-    sendToBackendDijkstra(sentString);
+    sendToBackend(sentString, algo);
 }
 
-function startSolvingAstar(){
-    let sentString = getGridString();
-    sendToBackendAstar(sentString);
-}
-
-async function sendToBackendDijkstra(dataAsString) {
+async function sendToBackend(dataAsString, algo) {
     const data = { input: dataAsString };
 
     try {
-        const response = await fetch(`${apiBaseUrl}/start-solving-dijkstra`, {
+        const response = await fetch(`${apiBaseUrl}/start-solving-${algo}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -314,27 +309,6 @@ async function sendToBackendDijkstra(dataAsString) {
     }
 }
 
-async function sendToBackendAstar(dataAsString) {
-    const data = { input: dataAsString };
-
-    try {
-        const response = await fetch(`${apiBaseUrl}/start-solving-astar`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data), // Convert the payload to JSON
-        });
-
-        const result = await response.text(); // Extract result
-        console.log(result);
-        return result; // Return the result, unnecessary here but we keep for fun
-
-    } catch (error) {
-        console.error("Error:", error);
-        throw error; // Re-throw the error if needed
-    }
-}
 
 
 
@@ -346,9 +320,24 @@ function initialize(){
     // Initialize buttons with event listeners
     document.getElementById('generateBtn').addEventListener('pointerdown', generateGrid);
     document.getElementById('clearBtn').addEventListener('pointerdown', clearGrid);
-    document.getElementById('showValuesBtn').addEventListener('pointerdown', clearAllCircles);
-    document.getElementById('solveButtonDijkstra').addEventListener('pointerdown', startSolvingDijkstra);
-    document.getElementById('solveButtonAstar').addEventListener('pointerdown', startSolvingAstar);
+    document.getElementById('removeCirclesBtn').addEventListener('pointerdown', clearAllCircles);
+
+    document.getElementById('solveButtonDijkstra').addEventListener('pointerdown', () => {
+        startSolving("dijkstra");
+    });
+    document.getElementById('solveButtonAstar').addEventListener('pointerdown', () => {
+        startSolving("astar");
+    });
+    document.getElementById('solveButtonBFS').addEventListener('pointerdown', () => {
+        startSolving("bfs");
+    });
+    document.getElementById('solveButtonDFS').addEventListener('pointerdown', () => {
+        startSolving("dfs");
+    });
+    document.getElementById('solveButtonRandomDFS').addEventListener('pointerdown', () => {
+        startSolving("randomdfs");
+    });
+
 
     // Color mode buttons
     setButtonAction('black');

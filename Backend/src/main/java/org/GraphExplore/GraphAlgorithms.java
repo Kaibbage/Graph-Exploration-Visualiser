@@ -31,6 +31,14 @@ public class GraphAlgorithms {
         boolean solved = false;
         List<int[]> finalPath = new ArrayList<>();
 
+        for(int r = 0; r < n; r++){
+            for(int c = 0; c < n; c++){
+                if(grid[r][c] == 10_000){
+                    seen[r][c] = true;
+                }
+            }
+        }
+
         while(!minHeap.isEmpty()){
             LengthPathPosition current = minHeap.poll();
             int r = current.r;
@@ -90,6 +98,14 @@ public class GraphAlgorithms {
         boolean solved = false;
         List<int[]> finalPath = new ArrayList<>();
 
+        for(int r = 0; r < n; r++){
+            for(int c = 0; c < n; c++){
+                if(grid[r][c] == 10_000){
+                    seen[r][c] = true;
+                }
+            }
+        }
+
         while(!minHeap.isEmpty()){
             LengthPathPositionEstimate current = minHeap.poll();
             int r = current.r;
@@ -129,6 +145,137 @@ public class GraphAlgorithms {
         }
     }
 
+    public void bfs(int[][] grid) throws InterruptedException {
+        int n = grid.length;
+
+        int[] start = new int[2];
+        int[] end = new int[2];
+
+        getStartAndEnd(start, end, grid, n);
+
+        List<int[]> explored = new ArrayList<>();
+        boolean[][] seen = new boolean[n][n];
+
+        boolean solved = false;
+        List<int[]> finalPath = new ArrayList<>();
+
+        Queue<LengthPathPosition> q = new LinkedList<>();
+        q.add(new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]));
+        seen[start[0]][start[1]] = true;
+
+        for(int r = 0; r < n; r++){
+            for(int c = 0; c < n; c++){
+                if(grid[r][c] == 10_000){
+                    seen[r][c] = true;
+                }
+            }
+        }
+
+        while(!q.isEmpty()){
+            LengthPathPosition current = q.poll();
+
+            int r = current.r;
+            int c = current.c;
+
+            explored.add(new int[]{r, c});
+
+            buildAndSendString(explored, current.path, false);
+
+            if(r == end[0] && c == end[1]){
+                //we did it!
+                solved = true;
+                finalPath = current.path;
+                break;
+            }
+
+            for(int[] direction: directions){
+                int nr = r + direction[0];
+                int nc = c + direction[1];
+
+                if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
+                    seen[nr][nc] = true;
+                    q.add(new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc));
+                }
+            }
+
+
+        }
+
+        if(solved){
+            buildAndSendString(explored, finalPath, true);
+        }
+        else{
+            //do smth maybe
+        }
+    }
+
+
+    public void dfsParent(int[][] grid) throws InterruptedException {
+        int n = grid.length;
+
+        int[] start = new int[2];
+        int[] end = new int[2];
+
+        getStartAndEnd(start, end, grid, n);
+
+        List<int[]> explored = new ArrayList<>();
+        boolean[][] seen = new boolean[n][n];
+
+        boolean solved = false;
+        List<int[]> finalPath = new ArrayList<>();
+
+        for(int r = 0; r < n; r++){
+            for(int c = 0; c < n; c++){
+                if(grid[r][c] == 10_000){
+                    seen[r][c] = true;
+                }
+            }
+        }
+
+        solved = dfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n);
+
+        if(solved){
+            buildAndSendString(explored, finalPath, true);
+        }
+        else{
+            //do smth maybe
+        }
+
+
+    }
+
+    public boolean dfs(int[][] grid, LengthPathPosition current, List<int[]> explored, boolean[][] seen, List<int[]> finalPath, int[] end, int n) throws InterruptedException {
+        int r = current.r;
+        int c = current.c;
+
+
+        seen[r][c] = true;
+        explored.add(new int[]{r, c});
+
+        buildAndSendString(explored, current.path, false);
+
+        if(r == end[0] && c == end[1]){
+            //we did it!
+            finalPath.addAll(current.path);
+            return true;
+        }
+
+        for(int[] direction: directions){
+            int nr = r + direction[0];
+            int nc = c + direction[1];
+
+            if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
+                LengthPathPosition next = new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc);
+                if(dfs(grid, next, explored, seen, finalPath, end, n)){
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    //perhaps better version of astar, but for my usage here i don't want to revisit nodes
 //    public void astar(int[][] grid) throws InterruptedException {
 //        int n = grid.length;
 //
