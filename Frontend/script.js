@@ -30,11 +30,13 @@ function openWebSocket() {
 
 function processGrid(event){
     let str = event.data;
-    let threePart = str.split("::");
+    let fivePart = str.split("::");
 
-    let code = threePart[0];
-    let explored = threePart[1]; //dark green dots?
-    let path = threePart[2]; //green dots
+    let code = fivePart[0];
+    let explored = fivePart[1]; //dark green dots?
+    let path = fivePart[2]; //green dots
+    let costString = fivePart[3];
+    let numExploredString = fivePart[4];
 
     clearAllCircles();
 
@@ -45,11 +47,25 @@ function processGrid(event){
     fillExploredDarkGreen(exploredArray);
     fillPathGreen(pathArray);
 
+        if(code === "solved"){
+            updateCostAndNumExplored(costString, numExploredString);
+        }
+        else if(code === "failed"){
+
+        }
+
     
 }
 
+function updateCostAndNumExplored(costString, numExploredString){
+    let costBox = document.getElementById("pathCost");
+    let numExploredBox = document.getElementById("nodesExplored");
+
+    costBox.innerHTML = costString;
+    numExploredBox.innerHTML = numExploredString;
+}
+
 function fillExploredDarkGreen(exploredArray){
-    console.log(exploredArray);
     exploredArray.forEach(function(coord){
         let row = coord[0];
         let col = coord[1];
@@ -130,6 +146,8 @@ function clearGrid() {
     const bottomRight = document.getElementById(`cell-${currentGridSize - 1}-${currentGridSize - 1}`);
     updateCellColor(bottomRight, "purple");
     purpleCellId = bottomRight.id;
+
+    resetStats();
 }
 
 
@@ -138,6 +156,8 @@ function clearAllCircles() {
     document.querySelectorAll('.cell.green-circle, .cell.dark-green-circle').forEach(cell => {
         cell.classList.remove('green-circle', 'dark-green-circle');
     });
+
+    resetStats();
 }
 
 
@@ -310,7 +330,50 @@ async function sendToBackend(dataAsString, algo) {
 }
 
 
+// Info text for each button
+const buttonInfo = {
+  'blackModeBtn': 'Black cells represent walls/obstacles (high cost: 10,000). They block all pathfinding algorithms.',
+  'blueModeBtn': 'Blue cells represent water (cost: 10). Pathfinding algorithms will avoid these unless necessary.',
+  'redModeBtn': 'Red cells represent mud (cost: 5). Pathfinding algorithms will prefer to avoid these.',
+  'yellowModeBtn': 'Yellow cells represent sand (cost: 2). Pathfinding algorithms will prefer paths without these.',
+  'whiteModeBtn': 'White cells are normal terrain (cost: 1). This is also the eraser tool.',
+  'orangeModeBtn': 'Orange is the START point. Click this button then click where you want the path to begin.',
+  'purpleModeBtn': 'Purple is the END point. Click this button then click where you want the path to end.',
+  'generateBtn': 'Generate a new grid with the specified size (N x N).',
+  'clearBtn': 'Reset the entire grid, keeping the current size but clearing all colors.',
+  'removeCirclesBtn': 'Remove all path visualization (green and dark green circles).',
+  'solveButtonDijkstra': 'Run Dijkstra\'s algorithm - finds the shortest path considering cell costs.',
+  'solveButtonAstar': 'Run A* algorithm - heuristic-based search that is usually faster than Dijkstra.',
+  'solveButtonBFS': 'Run Breadth-First Search - explores all neighbors equally (ignores costs).',
+  'solveButtonDFS': 'Run Depth-First Search - explores one path as far as possible before backtracking.',
+  'solveButtonRandomDFS': 'Run Randomized DFS - explores paths in random order.'
+};
 
+function setupHoverInfo() {
+  const infoText = document.getElementById('infoText');
+  
+  // Add hover events for all buttons
+  Object.keys(buttonInfo).forEach(buttonId => {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      button.addEventListener('mouseenter', () => {
+        infoText.textContent = buttonInfo[buttonId];
+      });
+      button.addEventListener('mouseleave', () => {
+        infoText.textContent = 'Hover over any button to see information about it.';
+      });
+    }
+  });
+}
+
+function updateStats(exploredCount, pathCost) {
+  document.getElementById('nodesExplored').textContent = exploredCount;
+  document.getElementById('pathCost').textContent = pathCost;
+}
+
+function resetStats() {
+  updateStats(0, 0);
+}
 
 function initialize(){
     // Track pointer state
@@ -347,6 +410,8 @@ function initialize(){
     setButtonAction('white');
     setButtonAction('orange');
     setButtonAction('purple');
+
+    setupHoverInfo();
 
     // Initialize grid
     generateGrid();

@@ -106,33 +106,24 @@ public class GraphExploreController {
         return "Shortest Path solving started";
     }
 
-//    @PostMapping("/start-solving-randomdfs")
-//    public String startSolvingRandomDFS(@RequestBody InputRequest request) {
-//        String input = request.getInput();
-//
-//        int[][] grid = ParseUtils.getGridFromString(input);
-//
-//        new Thread(() -> {
-//            try {
-//                graphAlgorithms.randomDfsParent(grid);
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//        }).start();
-//
-//
-//        return "Shortest Path solving started";
-//    }
+    @PostMapping("/start-solving-randomdfs")
+    public String startSolvingRandomDFS(@RequestBody InputRequest request) {
+        String input = request.getInput();
+
+        int[][] grid = ParseUtils.getGridFromString(input);
+
+        new Thread(() -> {
+            try {
+                graphAlgorithms.randomDfsParent(grid);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
 
 
-
-
-    // Method to send update to the frontend via WebSocket
-    private void sendUpdateToFrontend(String value) {
-        if (webSocketHandler != null) {
-            webSocketHandler.sendUpdate(value);
-        }
+        return "Shortest Path solving started";
     }
+
 
 
 }

@@ -8,30 +8,24 @@ body {
     font-family: sans-serif;
     touch-action: manipulation;
 }
+
 .container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
-.controls {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 200px;
-}
-.control-group {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    margin-bottom: 10px;
-}
+
 .grid {
-  display: grid;
-  width: 700px;   /* increased from 600px */
-  height: 700px;  /* increased from 600px */
-  gap: 0;
-  touch-action: none;
+    display: grid;
+    width: 720px;
+    height: 720px;
+    gap: 0;
+    touch-action: none;
 }
+
 .cell {
     background-color: white;
     border: 1px solid #d1d5db;
@@ -43,6 +37,7 @@ body {
     user-select: none;
     position: relative;
 }
+
 .cell.green-circle::after {
     content: '';
     position: absolute;
@@ -53,81 +48,70 @@ body {
     opacity: 0.7;
     pointer-events: none;
 }
+
 .cell.dark-green-circle::after {
     content: '';
     position: absolute;
     width: 50%;
     height: 50%;
     border-radius: 50%;
-    background-color: #006400; /* Dark green */
+    background-color: #006400;
     opacity: 0.7;
     pointer-events: none;
 }
+
+/* Cell colors */
 .black {
     background-color: black;
     color: white;
 }
+
 .blue {
     background-color: #4285f4;
     color: white;
 }
+
 .red {
     background-color: #ea4335;
     color: white;
 }
+
 .yellow {
     background-color: #fbbc05;
     color: black;
 }
+
 .white {
     background-color: white;
     color: black;
 }
-.draw-mode-black {
-    background-color: #333;
-    color: white;
-}
-.draw-mode-blue {
-    background-color: #4285f4;
-    color: white;
-}
-.draw-mode-red {
-    background-color: #ea4335;
-    color: white;
-}
-.draw-mode-yellow {
-    background-color: #fbbc05;
-    color: black;
-}
-.draw-mode-white {
-    background-color: white;
-    border: 2px solid #333;
-    color: black;
-}
-.draw-mode-green {
-    background-color: #a5d6a7;
-    color: black;
-}
+
 .orange {
     background-color: orange;
     color: black;
 }
+
 .purple {
     background-color: purple;
     color: white;
 }
-.draw-mode-orange {
-    background-color: orange;
-    color: black;
+
+/* Controls section */
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 200px;
 }
-.draw-mode-purple {
-    background-color: purple;
-    color: white;
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
 }
-.active-mode {
-    transform: scale(1.05);
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
-}
+
+/* Button styles */
 button {
     padding: 8px 12px;
     cursor: pointer;
@@ -135,12 +119,211 @@ button {
     border-radius: 4px;
     background-color: white;
     touch-action: manipulation;
+    transition: background-color 0.2s, transform 0.1s;
 }
+
 button:active {
     transform: scale(0.98);
 }
+
+/* Button colors */
+#blackModeBtn {
+    background-color: #cccccc;
+}
+
+#blueModeBtn {
+    background-color: #bbdefb;
+}
+
+#redModeBtn {
+    background-color: #ffcdd2;
+}
+
+#yellowModeBtn {
+    background-color: #fff9c4;
+}
+
+#whiteModeBtn {
+    background-color: white;
+}
+
+#orangeModeBtn {
+    background-color: #ffe0b2;
+}
+
+#purpleModeBtn {
+    background-color: #e1bee7;
+}
+
+/* Active button styles */
+#blackModeBtn.active-mode {
+    background-color: #333;
+    color: white;
+}
+
+#blueModeBtn.active-mode {
+    background-color: #4285f4;
+    color: white;
+}
+
+#redModeBtn.active-mode {
+    background-color: #ea4335;
+    color: white;
+}
+
+#yellowModeBtn.active-mode {
+    background-color: #fbbc05;
+    color: black;
+}
+
+#whiteModeBtn.active-mode {
+    background-color: white;
+    border: 2px solid #333;
+    color: black;
+}
+
+#orangeModeBtn.active-mode {
+    background-color: orange;
+    color: black;
+}
+
+#purpleModeBtn.active-mode {
+    background-color: purple;
+    color: white;
+}
+
+/* Other buttons */
+#generateBtn, #clearBtn, #removeCirclesBtn{
+    background-color: #f5f5f5;
+}
+
+.active-mode {
+    transform: scale(1.05);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+/* Right panels container */
+.right-panels {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-left: 20px;
+    width: 250px;
+}
+
+/* Info Panel */
+.info-panel {
+    width: 100%;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-panel h3 {
+    margin-top: 0;
+    color: #495057;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 8px;
+}
+
+#infoText {
+    color: #343a40;
+    line-height: 1.5;
+    min-height: 100px;
+    margin: 0;
+}
+
+/* Stats Panel */
+.stats-panel {
+    width: 100%;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.stat-box {
+    background-color: #e9ecef;
+    border-radius: 6px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+}
+
+.stat-box h4 {
+    margin: 0 0 5px 0;
+    font-size: 13px;
+    color: #495057;
+    font-weight: normal;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #212529;
+}
+
+/* Input styles */
 input {
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+/* Algorithm buttons */
+#solveButtonDijkstra, 
+#solveButtonAstar, 
+#solveButtonBFS, 
+#solveButtonDFS, 
+#solveButtonRandomDFS {
+    background-color: #e6f7e6;
+    color: #2e7d32;
+    border-color: #a5d6a7;
+    transition: all 0.2s;
+}
+
+/* Hover state */
+#solveButtonDijkstra:hover, 
+#solveButtonAstar:hover, 
+#solveButtonBFS:hover, 
+#solveButtonDFS:hover, 
+#solveButtonRandomDFS:hover {
+    background-color: #c8e6c9;
+}
+
+/* Active state */
+#solveButtonDijkstra:active, 
+#solveButtonAstar:active, 
+#solveButtonBFS:active, 
+#solveButtonDFS:active, 
+#solveButtonRandomDFS:active {
+    background-color: #a5d6a7;
+    transform: scale(0.98);
+}
+
+/* Active mode */
+#solveButtonDijkstra.active-mode, 
+#solveButtonAstar.active-mode, 
+#solveButtonBFS.active-mode, 
+#solveButtonDFS.active-mode, 
+#solveButtonRandomDFS.active-mode {
+    background-color: #81c784;
+    color: white;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }

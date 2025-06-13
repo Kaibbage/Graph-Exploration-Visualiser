@@ -24,15 +24,10 @@ public class ParseUtils {
         return grid;
     }
 
-    public static String createSendBackString(List<int[]> explored, List<int[]> path, boolean done){
+    public static String createSendBackString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored){
         StringBuilder sb = new StringBuilder();
 
-        if(done){
-            sb.append("done");
-        }
-        else{
-            sb.append("not");
-        }
+        sb.append(status);
         sb.append("::");
 
         for(int[] exploredRC: explored){
@@ -45,6 +40,13 @@ public class ParseUtils {
             sb.append(pathRC[0] + " " + pathRC[1] + "|");
         }
         sb.deleteCharAt(sb.length()-1);
+
+        sb.append("::");
+        sb.append(cost);
+
+        sb.append("::");
+        sb.append(numExplored);
+
 
         return sb.toString();
 
