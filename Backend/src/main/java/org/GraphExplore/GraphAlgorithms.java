@@ -8,7 +8,7 @@ import static org.GraphExplore.ParseUtils.createSendBackString;
 public class GraphAlgorithms {
     private GraphExploreWebSocketHandler webSocketHandler;
 
-    // Constructor injection of WebSocket handler
+    //giving websocket to here so it can send to frontend
     public GraphAlgorithms(GraphExploreWebSocketHandler webSocketHandler) {
         this.webSocketHandler = webSocketHandler;
     }
@@ -55,7 +55,6 @@ public class GraphAlgorithms {
             buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
 
             if(r == end[0] && c == end[1]){
-                //we did it!
                 solved = true;
                 finalPath = current.path;
                 finalCost = current.length;
@@ -357,12 +356,14 @@ public class GraphAlgorithms {
         return false;
     }
 
+    //estimate for astar, can be changed maybe, perhaps should average cost of path so far and multiply, or maybe avg cost of graph
     public int getEstimate(int[] pos, int[] end){
         int r = pos[0], c = pos[1];
         int rEnd = end[0], cEnd = end[1];
         return Math.abs(r - rEnd) + Math.abs(c - cEnd);
     }
 
+    //time slept should maybe be changed based on size of grid? maybe also slower so easier to see
     public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored) throws InterruptedException {
         Thread.sleep(10);
         String s = createSendBackString(explored, path, status, cost, numExplored);
@@ -394,7 +395,7 @@ public class GraphAlgorithms {
         }
     }
 
-    //perhaps better version of astar, but for my usage here i don't want to revisit nodes
+    //perhaps better version of astar, but for my usage here i don't want to revisit nodes, this would get a better path in some scenarios
 //    public void astar(int[][] grid) throws InterruptedException {
 //        int n = grid.length;
 //

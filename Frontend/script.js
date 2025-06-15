@@ -33,7 +33,7 @@ function processGrid(event){
     let fivePart = str.split("::");
 
     let code = fivePart[0];
-    let explored = fivePart[1]; //dark green dots?
+    let explored = fivePart[1]; //dark green dots?, maybe change this later so not so prominent
     let path = fivePart[2]; //green dots
     let costString = fivePart[3];
     let numExploredString = fivePart[4];
@@ -107,7 +107,7 @@ function processCoordinates(coords){
 function setDrawMode(mode) {
     currentDrawMode = mode;
       
-    // Reset all mode buttons so are not highlighted
+    //reset all buttons to default color
     const buttons = ['blackModeBtn', 'blueModeBtn', 'redModeBtn','yellowModeBtn', 'whiteModeBtn','orangeModeBtn', 'purpleModeBtn'];
     buttons.forEach(btn => {
         document.getElementById(btn).classList.remove(
@@ -122,7 +122,7 @@ function setDrawMode(mode) {
         );
     });
       
-    // Set active mode
+    //coloring the chosen button so ppl know it is chosen
     if (mode) {
         document.getElementById(`${mode}ModeBtn`).classList.add(
             `draw-mode-${mode}`,
@@ -137,12 +137,12 @@ function clearGrid() {
         clearCell(cell);
     });
 
-    // Reset orange to top-left
+    //reset orange to top-left
     const topLeft = document.getElementById("cell-0-0");
     updateCellColor(topLeft, "orange");
     orangeCellId = topLeft.id;
 
-    // Reset purple to bottom-right
+    //reset purple to bottom-right
     const bottomRight = document.getElementById(`cell-${currentGridSize - 1}-${currentGridSize - 1}`);
     updateCellColor(bottomRight, "purple");
     purpleCellId = bottomRight.id;
@@ -166,8 +166,12 @@ function clearCell(cell){
     cell.dataset.color = 'white';
 }
 
+//maybe make sure we can't draw over purple and orange in here
 function updateCellColor(cell, color) {
-    // Ensure only one orange or purple cell
+    if(cell.id === orangeCellId || cell.id === purpleCellId){
+        return
+    }
+    //making sure there is only 1 purple or orange
     if (color === 'orange') {
         if (orangeCellId && orangeCellId !== cell.id) {
             const prev = document.getElementById(orangeCellId);
@@ -236,7 +240,7 @@ function generateGrid() {
             cell.id = `cell-${row}-${col}`;
             cell.dataset.color = 'white';
           
-            // Add event listeners for drawing
+            //add event listener for each cell
             cell.addEventListener('pointerover', colorPointerDown);
             cell.addEventListener('pointerdown', colorPointerPress);
           
@@ -244,12 +248,12 @@ function generateGrid() {
         }
     }
 
-    // ✅ Set top-left to orange (start)
+    //set top-left to orange (start)
     const topLeft = document.getElementById("cell-0-0");
     updateCellColor(topLeft, "orange");
     orangeCellId = topLeft.id;
 
-    // ✅ Set bottom-right to purple (end)
+    //set bottom-right to purple (end)
     const bottomRight = document.getElementById(`cell-${n - 1}-${n - 1}`);
     updateCellColor(bottomRight, "purple");
     purpleCellId = bottomRight.id;
@@ -316,21 +320,21 @@ async function sendToBackend(dataAsString, algo) {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data), // Convert the payload to JSON
+            body: JSON.stringify(data), //sendinginfo
         });
 
         const result = await response.text(); // Extract result
         console.log(result);
-        return result; // Return the result, unnecessary here but we keep for fun
+        return result; //return result, unnecessary here but we keep for fun
 
     } catch (error) {
         console.error("Error:", error);
-        throw error; // Re-throw the error if needed
+        throw error; //throw error if needed
     }
 }
 
 
-// Info text for each button
+//info text for each hover over button, could perhaps change to make more detailed
 const buttonInfo = {
   'blackModeBtn': 'Black cells represent walls/obstacles (high cost: 10,000). They block all pathfinding algorithms.',
   'blueModeBtn': 'Blue cells represent water (cost: 10). Pathfinding algorithms will avoid these unless necessary.',
@@ -351,8 +355,8 @@ const buttonInfo = {
 
 function setupHoverInfo() {
   const infoText = document.getElementById('infoText');
-  
-  // Add hover events for all buttons
+
+  //adding hover for every button
   Object.keys(buttonInfo).forEach(buttonId => {
     const button = document.getElementById(buttonId);
     if (button) {
@@ -376,15 +380,16 @@ function resetStats() {
 }
 
 function initialize(){
-    // Track pointer state
+    //tracking state of pointer for functions that need it
     document.addEventListener('pointerdown', () => { isPointerDown = true; });
     document.addEventListener('pointerup', () => { isPointerDown = false; });
 
-    // Initialize buttons with event listeners
+    //init other buttons
     document.getElementById('generateBtn').addEventListener('pointerdown', generateGrid);
     document.getElementById('clearBtn').addEventListener('pointerdown', clearGrid);
     document.getElementById('removeCirclesBtn').addEventListener('pointerdown', clearAllCircles);
 
+    //init solve buttons
     document.getElementById('solveButtonDijkstra').addEventListener('pointerdown', () => {
         startSolving("dijkstra");
     });
@@ -402,7 +407,7 @@ function initialize(){
     });
 
 
-    // Color mode buttons
+    //init color buttons
     setButtonAction('black');
     setButtonAction('red');
     setButtonAction('yellow');
@@ -413,9 +418,8 @@ function initialize(){
 
     setupHoverInfo();
 
-    // Initialize grid
     generateGrid();
-    setDrawMode('black'); // Set default mode
+    setDrawMode('black'); //set start to black
 
     openWebSocket();
 }
