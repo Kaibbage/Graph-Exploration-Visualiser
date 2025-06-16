@@ -2,6 +2,7 @@ package org.GraphExplore;
 
 import java.util.*;
 
+import static org.GraphExplore.Constants.TIME;
 import static org.GraphExplore.Constants.directions;
 import static org.GraphExplore.ParseUtils.createSendBackString;
 
@@ -52,7 +53,7 @@ public class GraphAlgorithms {
             seen[r][c] = true;
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
 
             if(r == end[0] && c == end[1]){
                 solved = true;
@@ -72,10 +73,10 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
         }
 
     }
@@ -120,7 +121,7 @@ public class GraphAlgorithms {
 
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
 
             if(r == end[0] && c == end[1]){
                 //we did it!
@@ -141,10 +142,10 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
         }
     }
 
@@ -183,7 +184,7 @@ public class GraphAlgorithms {
 
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
 
             if(r == end[0] && c == end[1]){
                 //we did it!
@@ -207,10 +208,10 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size());
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
         }
     }
 
@@ -241,10 +242,10 @@ public class GraphAlgorithms {
         solved = dfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost);
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size());
+            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size());
+            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n);
         }
 
 
@@ -258,7 +259,7 @@ public class GraphAlgorithms {
         seen[r][c] = true;
         explored.add(new int[]{r, c});
 
-        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
+        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
 
         if(r == end[0] && c == end[1]){
             //we did it!
@@ -308,10 +309,10 @@ public class GraphAlgorithms {
         solved = randomDfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost);
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size());
+            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size());
+            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n);
         }
 
 
@@ -325,7 +326,7 @@ public class GraphAlgorithms {
         seen[r][c] = true;
         explored.add(new int[]{r, c});
 
-        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size());
+        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
 
         if(r == end[0] && c == end[1]){
             //we did it!
@@ -364,8 +365,8 @@ public class GraphAlgorithms {
     }
 
     //time slept should maybe be changed based on size of grid? maybe also slower so easier to see
-    public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored) throws InterruptedException {
-        Thread.sleep(10);
+    public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored, int n) throws InterruptedException {
+        Thread.sleep(TIME/(n*n));
         String s = createSendBackString(explored, path, status, cost, numExplored);
         sendUpdateToFrontend(s);
     }

@@ -168,7 +168,7 @@ function clearCell(cell){
 
 //maybe make sure we can't draw over purple and orange in here
 function updateCellColor(cell, color) {
-    if(cell.id === orangeCellId || cell.id === purpleCellId){
+    if((cell.id === orangeCellId && color !== "orange") || (cell.id === purpleCellId && color !== "purple")){
         return
     }
     //making sure there is only 1 purple or orange
@@ -250,13 +250,15 @@ function generateGrid() {
 
     //set top-left to orange (start)
     const topLeft = document.getElementById("cell-0-0");
-    updateCellColor(topLeft, "orange");
     orangeCellId = topLeft.id;
+    updateCellColor(topLeft, "orange");
+
 
     //set bottom-right to purple (end)
     const bottomRight = document.getElementById(`cell-${n - 1}-${n - 1}`);
-    updateCellColor(bottomRight, "purple");
     purpleCellId = bottomRight.id;
+    updateCellColor(bottomRight, "purple");
+
 }
 
 function setButtonAction(colour){
