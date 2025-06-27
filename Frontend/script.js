@@ -427,6 +427,6 @@ function initialize(){
 }
 
     
-initialize();
+window.onload = initialize;
 
 
