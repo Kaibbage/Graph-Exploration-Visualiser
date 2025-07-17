@@ -16,6 +16,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    margin-left: 500px;
 }
 
 .grid {
@@ -326,4 +327,123 @@ label {
     background-color: #81c784;
     color: white;
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+
+
+.left-panel {
+    position: absolute;
+    top: 40px;
+    left: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 1000;
+    height: 1000px;
+    width: 340px;
+}
+
+.status-container {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    flex-direction: column;
+    align-items: center;
+    z-index: 1000;
+
+    border: 2px solid #333;
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+
+    width: 200px;
+    height: 200px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+.status-label {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.status-indicator {
+    position: absolute;
+    left: 50%;
+    bottom: 30%;
+    transform: translate(-50%, 70%);
+    width: 50px;
+    height: 50px;
+    background-color: red;
+    border-radius: 50%;
+    border: 2px solid #333;
+}
+
+.instruction-container {
+    position: absolute;
+    border: 2px solid #333;
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
+    width: 400px;
+    height: 250px;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+#next-button {
+    background-color: #ffa500;
+    color: white;
+    padding: 8px 0;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 50%;
+    height: 30%;
+    transition: background-color 0.3s;
+    
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#next-button:hover {
+    background-color: #e69500;
+}
+
+#instruction-text{
+    margin: 0;
+    font-size: 20px;
+    color: #333;
+    line-height: 1.4;
+}
+
+
+
+#hide-button {
+    position: absolute;
+    left: 40px;
+    top: 300px;
+    background-color: rgb(89, 97, 197);
+    height: 60px;
+    width: 110px;
+    font-size: 14px;
+    color: white;
+    z-index: 2000;
+
+}
+
+#hide-button:hover {
+    background-color: rgb(51, 55, 110);
 }

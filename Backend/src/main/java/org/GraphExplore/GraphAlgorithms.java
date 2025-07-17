@@ -368,6 +368,7 @@ public class GraphAlgorithms {
     public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored, int n) throws InterruptedException {
         Thread.sleep(TIME/(n*n));
         String s = createSendBackString(explored, path, status, cost, numExplored);
+        System.out.println(status);
         sendUpdateToFrontend(s);
     }
 

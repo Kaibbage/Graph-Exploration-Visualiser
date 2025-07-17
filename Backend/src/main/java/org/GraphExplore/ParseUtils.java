@@ -39,7 +39,13 @@ public class ParseUtils {
         for(int[] pathRC: path){
             sb.append(pathRC[0] + " " + pathRC[1] + "|");
         }
-        sb.deleteCharAt(sb.length()-1);
+        if(!path.isEmpty()){
+            sb.deleteCharAt(sb.length()-1);
+        }
+        else{
+            sb.append(" ");
+        }
+
 
         sb.append("::");
         sb.append(cost);
