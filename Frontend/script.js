@@ -1,5 +1,9 @@
-const apiBaseUrl = "http://localhost:8080";
-const wsUrl = "ws://localhost:8080/ws/graph_explore";
+const apiBaseUrl = "https://graph-exploration-visualiser-backend.onrender.com";
+const wsUrl = "wss://graph-exploration-visualiser-backend.onrender.com/ws/graph_explore";
+// const apiBaseUrl = "http://localhost:8080";
+// const wsUrl = "ws://localhost:8080/ws/graph_explore";
+
+
 let socket;
 
 let currentGridSize = 10;
@@ -39,7 +43,6 @@ function openWebSocket() {
 
 function processGrid(event){
     let str = event.data;
-    console.log(str);
     let fivePart = str.split("::");
 
     let code = fivePart[0];
@@ -57,7 +60,6 @@ function processGrid(event){
     fillExploredDarkGreen(exploredArray);
     fillPathGreen(pathArray);
 
-    console.log(code);
 
     if(code === "solved"){
         updateCostAndNumExplored(costString, numExploredString);

@@ -19,6 +19,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(webSocketHandler, "/ws/graph_explore")
-                .setAllowedOrigins("http://127.0.0.1:8081");  // Add allowed origins for WebSocket
+                .setAllowedOrigins(
+                        "https://graph-exploration-visualiser.onrender.com",
+                        "http://127.0.0.1:8081"
+                );
     }
+
 }
