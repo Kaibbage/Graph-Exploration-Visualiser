@@ -16,6 +16,8 @@ let disabled;
 let intervalId;
 let timeToReady;
 
+let uniqueId;
+
 
 function openWebSocket() {
     socket = new WebSocket(wsUrl);
@@ -30,7 +32,15 @@ function openWebSocket() {
     };
 
 
-    socket.onmessage = processGrid;
+    socket.onmessage = function (event) {
+        let str = event.data;
+        if(str.startsWith("SessionId:")){
+            uniqueId = str.split(":")[1];
+        }
+        else{
+            processGrid(event);
+        }
+    };
 
     socket.onerror = function(error) {
         console.log('WebSocket Error:', error);
@@ -147,7 +157,58 @@ function processCoordinates(coords){
 
     return coordsArray;
 
+}
+async function getRandomGridFromBackend() {
+    if(disabled){
+        return;
+    }
+    const data = { 
+        input: currentGridSize,
+        id: uniqueId
+     };
 
+    try {
+        const response = await fetch(`${apiBaseUrl}/get-random-grid`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data), //sendinginfo
+        });
+
+        const result = await response.text(); // Extract result
+
+        fillGrid(result);
+
+    } catch (error) {
+        console.error("Error:", error);
+        throw error; //throw error if needed
+    }
+}
+
+function fillGrid(gridString){
+    let cellColours = gridString.split(" ");
+
+    for(let r = 0; r < currentGridSize; r++){
+        for(let c = 0; c < currentGridSize; c++){
+            let cell = document.getElementById(`cell-${r}-${c}`);
+            let color = cellColours[r*currentGridSize + c];
+
+            clearCell(cell);
+            if(color !== 'white'){
+                cell.classList.add(color);
+            }
+            if(color === 'orange'){
+                orangeCellId = cell.id;
+            }
+            if(color === 'purple'){
+                purpleCellId = cell.id;
+            }
+
+            cell.dataset.color = color;
+
+        }
+    }
 }
 
 
@@ -286,7 +347,18 @@ function generateGrid(initial) {
     if(!initial && disabled){
         return;
     }
-    const n = parseInt(document.getElementById("gridSize").value);
+    let n = parseInt(document.getElementById("gridSize").value);
+
+    //clamp the grid size between 2 and 100
+    if(isNaN(n) || n < 2){
+        n = 2;
+    } 
+    else if(n > 100){
+        n = 100;
+    }
+
+    document.getElementById("gridSize").value = n; 
+    
     currentGridSize = n;
       
     const grid = document.getElementById("grid");
@@ -381,7 +453,10 @@ function startSolving(algo){
 }
 
 async function sendToBackend(dataAsString, algo) {
-    const data = { input: dataAsString };
+    const data = { 
+        input: dataAsString,
+        id: uniqueId
+     };
 
     try {
         const response = await fetch(`${apiBaseUrl}/start-solving-${algo}`, {
@@ -447,7 +522,7 @@ function setupHoverInfo() {
 }
 
 let instructions = ["Click here to get instructions", 
-                    "This is a site where you can visualize different graph exploration/shorted path algorithms and compare their efficiency",
+                    "This is a site where you can visualize different graph exploration/shortest path algorithms and compare their efficiency",
                     "The grid starts out as all white with the start (orange) and end (purple) nodes marked in the top left and bottom right corners respectively",
                     "The white squares have a cost of 1 to be traveled to, then yellow (2), red (5), and blue (10) have increased costs and are costlier nodes",
                     "The black squares are walls and cannot be traveled to or through",
@@ -506,6 +581,7 @@ function initialize(){
     document.getElementById('generateBtn').addEventListener('pointerdown', () => {
         generateGrid(false);
     });
+    document.getElementById('randomBtn').addEventListener('pointerdown', getRandomGridFromBackend);
     document.getElementById('clearBtn').addEventListener('pointerdown', clearGrid);
     document.getElementById('removeCirclesBtn').addEventListener('pointerdown', clearAllCircles);
 

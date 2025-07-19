@@ -57,4 +57,19 @@ public class ParseUtils {
         return sb.toString();
 
     }
+
+    public static String convertRandomGridToString(String[][] stringGrid, int n){
+        StringBuilder sb = new StringBuilder();
+
+        for(int r = 0; r < n; r++){
+            for(int c = 0; c < n; c++){
+                sb.append(stringGrid[r][c]);
+                sb.append(" ");
+            }
+        }
+
+        sb.deleteCharAt(sb.length()-1);
+
+        return sb.toString();
+    }
 }

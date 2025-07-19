@@ -6,6 +6,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -13,14 +14,19 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class GraphExploreWebSocketHandler extends TextWebSocketHandler {
 
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
+    private HashMap<String, WebSocketSession> idToSession = new HashMap<>();
 
     public GraphExploreWebSocketHandler() {
-        //System.out.println("WebSocketHandler instance created: " + this);
+        System.out.println("SudokuSolverWebSocketHandler instance created: " + this);
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         sessions.add(session);
+
+        String id = session.getId();
+        idToSession.put(id, session);
+        session.sendMessage(new TextMessage("SessionId:" + id));
     }
 
     @Override
@@ -33,19 +39,18 @@ public class GraphExploreWebSocketHandler extends TextWebSocketHandler {
         sessions.remove(session);
     }
 
-    public void sendUpdate(String counterValue) {
-        TextMessage message = new TextMessage(counterValue);
-        synchronized (sessions) {
-            for (WebSocketSession session : sessions) {
-                if (session.isOpen()) {
-                    try {
-                        session.sendMessage(message);
-                        //System.out.println("Sent update to session " + session.getId() + ": " + counterValue);
-                    } catch (IOException e) {
-                        //System.err.println("Failed to send message to session " + session.getId() + ": " + e.getMessage());
-                    }
-                }
+    public void sendUpdate(String text, String id) {
+        TextMessage message = new TextMessage(text);
+        WebSocketSession session = idToSession.get(id);
+        if (session.isOpen()) {
+            try {
+                session.sendMessage(message);
+            }
+            catch (IOException e) {
+                System.err.println("Failed to send message to session " + session.getId() + ": " + e.getMessage());
             }
         }
+
+
     }
 }

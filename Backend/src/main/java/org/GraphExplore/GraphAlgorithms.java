@@ -15,7 +15,7 @@ public class GraphAlgorithms {
     }
 
 
-    public void dijkstra(int[][] grid) throws InterruptedException {
+    public void dijkstra(int[][] grid, String id) throws InterruptedException {
         int n = grid.length;
 
         int[] start = new int[2];
@@ -53,7 +53,7 @@ public class GraphAlgorithms {
             seen[r][c] = true;
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
 
             if(r == end[0] && c == end[1]){
                 solved = true;
@@ -73,17 +73,17 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n, id);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n, id);
         }
 
     }
 
 
 
-    public void astar(int[][] grid) throws InterruptedException {
+    public void astar(int[][] grid, String id) throws InterruptedException {
         int n = grid.length;
 
         int[] start = new int[2];
@@ -121,7 +121,7 @@ public class GraphAlgorithms {
 
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
 
             if(r == end[0] && c == end[1]){
                 //we did it!
@@ -142,14 +142,14 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n, id);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n, id);
         }
     }
 
-    public void bfs(int[][] grid) throws InterruptedException {
+    public void bfs(int[][] grid, String id) throws InterruptedException {
         int n = grid.length;
 
         int[] start = new int[2];
@@ -184,7 +184,7 @@ public class GraphAlgorithms {
 
             explored.add(new int[]{r, c});
 
-            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
 
             if(r == end[0] && c == end[1]){
                 //we did it!
@@ -208,74 +208,77 @@ public class GraphAlgorithms {
         }
 
         if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "solved", finalCost, explored.size(), n, id);
         }
         else{
-            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n);
+            buildAndSendString(explored, finalPath, "failed", finalCost, explored.size(), n, id);
         }
     }
 
 
-    public void dfsParent(int[][] grid) throws InterruptedException {
+
+    public void dfsParent(int[][] grid, String id) throws InterruptedException {
         int n = grid.length;
 
         int[] start = new int[2];
         int[] end = new int[2];
-
         getStartAndEnd(start, end, grid, n);
 
         List<int[]> explored = new ArrayList<>();
         boolean[][] seen = new boolean[n][n];
 
-        boolean solved = false;
-        List<int[]> finalPath = new ArrayList<>();
-        int[] finalCost = new int[1];
-
-        for(int r = 0; r < n; r++){
-            for(int c = 0; c < n; c++){
-                if(grid[r][c] == 10_000){
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                if (grid[r][c] == 10_000) {
                     seen[r][c] = true;
                 }
             }
         }
 
-        solved = dfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost);
+        List<int[]> finalPath = new ArrayList<>();
+        int[] finalCost = new int[1];
 
-        if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n);
+        boolean solved = iterativeDfs(grid, start, end, seen, explored, finalPath, finalCost, id, n);
+
+        if (solved) {
+            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n, id);
+        } else {
+            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n, id);
         }
-        else{
-            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n);
-        }
-
-
     }
 
-    public boolean dfs(int[][] grid, LengthPathPosition current, List<int[]> explored, boolean[][] seen, List<int[]> finalPath, int[] end, int n, int[] finalCost) throws InterruptedException {
-        int r = current.r;
-        int c = current.c;
+    public boolean iterativeDfs(int[][] grid, int[] start, int[] end, boolean[][] seen,
+                                List<int[]> explored, List<int[]> finalPath, int[] finalCost,
+                                String id, int n) throws InterruptedException {
 
+        Stack<LengthPathPosition> stack = new Stack<>();
+        stack.push(new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]));
 
-        seen[r][c] = true;
-        explored.add(new int[]{r, c});
+        while (!stack.isEmpty()) {
+            LengthPathPosition current = stack.pop();
+            int r = current.r;
+            int c = current.c;
 
-        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
+            if (seen[r][c]) continue;
+            seen[r][c] = true;
+            explored.add(new int[]{r, c});
 
-        if(r == end[0] && c == end[1]){
-            //we did it!
-            finalPath.addAll(current.path);
-            finalCost[0] = current.length;
-            return true;
-        }
+            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
 
-        for(int[] direction: directions){
-            int nr = r + direction[0];
-            int nc = c + direction[1];
+            if (r == end[0] && c == end[1]) {
+                finalPath.addAll(current.path);
+                finalCost[0] = current.length;
+                return true;
+            }
 
-            if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
-                LengthPathPosition next = new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc);
-                if(dfs(grid, next, explored, seen, finalPath, end, n, finalCost)){
-                    return true;
+            for (int i = directions.length - 1; i >= 0; i--) { // Reverse order to maintain DFS direction order
+                int[] direction = directions[i];
+                int nr = r + direction[0];
+                int nc = c + direction[1];
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]) {
+                    List<int[]> newPath = new ArrayList<>(current.path);
+                    newPath.add(new int[]{r, c});
+                    stack.push(new LengthPathPosition(current.length + grid[nr][nc], newPath, nr, nc));
                 }
             }
         }
@@ -283,79 +286,96 @@ public class GraphAlgorithms {
         return false;
     }
 
-    public void randomDfsParent(int[][] grid) throws InterruptedException {
+
+    // Entry point
+    public List<int[]> randomDfsParent(int[][] grid, String id, boolean real) throws InterruptedException {
         int n = grid.length;
 
         int[] start = new int[2];
         int[] end = new int[2];
-
         getStartAndEnd(start, end, grid, n);
 
         List<int[]> explored = new ArrayList<>();
         boolean[][] seen = new boolean[n][n];
 
-        boolean solved = false;
-        List<int[]> finalPath = new ArrayList<>();
-        int[] finalCost = new int[1];
-
-        for(int r = 0; r < n; r++){
-            for(int c = 0; c < n; c++){
-                if(grid[r][c] == 10_000){
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                if (grid[r][c] == 10_000) {
                     seen[r][c] = true;
                 }
             }
         }
 
-        solved = randomDfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost);
+        List<int[]> finalPath = new ArrayList<>();
+        int[] finalCost = new int[1];
 
-        if(solved){
-            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n);
+        boolean solved = iterativeRandomDfs(grid, start, end, seen, explored, finalPath, finalCost, id, real, n);
+
+        if (real) {
+            if (solved) {
+                buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n, id);
+            } else {
+                buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n, id);
+            }
         }
-        else{
-            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n);
-        }
 
-
+        return finalPath;
     }
 
-    public boolean randomDfs(int[][] grid, LengthPathPosition current, List<int[]> explored, boolean[][] seen, List<int[]> finalPath, int[] end, int n, int[] finalCost) throws InterruptedException {
-        int r = current.r;
-        int c = current.c;
 
+    public boolean iterativeRandomDfs(int[][] grid, int[] start, int[] end, boolean[][] seen,
+                                      List<int[]> explored, List<int[]> finalPath, int[] finalCost,
+                                      String id, boolean real, int n) throws InterruptedException {
 
-        seen[r][c] = true;
-        explored.add(new int[]{r, c});
+        Stack<LengthPathPosition> stack = new Stack<>();
+        stack.push(new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]));
 
-        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n);
+        while (!stack.isEmpty()) {
+            LengthPathPosition current = stack.pop();
+            int r = current.r;
+            int c = current.c;
 
-        if(r == end[0] && c == end[1]){
-            //we did it!
-            finalPath.addAll(current.path);
-            finalCost[0] = current.length;
-            return true;
-        }
+            if (seen[r][c]) continue;
+            seen[r][c] = true;
 
-        List<int[]> directionList = new ArrayList<>();
-        for(int[] direction: directions){
-            directionList.add(new int[]{direction[0], direction[1]});
-        }
-        Collections.shuffle(directionList);
+            explored.add(new int[]{r, c});
 
-        for(int[] direction: directionList){
-            int nr = r + direction[0];
-            int nc = c + direction[1];
+            if (real) {
+                buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
+            }
 
-            if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
-                LengthPathPosition next = new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc);
-                if(randomDfs(grid, next, explored, seen, finalPath, end, n, finalCost)){
-                    return true;
+            if (r == end[0] && c == end[1]) {
+                finalPath.addAll(current.path);
+                finalCost[0] = current.length;
+                return true;
+            }
+
+            // Create a fresh shuffled direction list
+            List<int[]> directionList = new ArrayList<>();
+            for (int[] direction : directions) {
+                directionList.add(new int[]{direction[0], direction[1]});
+            }
+            Collections.shuffle(directionList);
+
+            for (int[] direction : directionList) {
+                int nr = r + direction[0];
+                int nc = c + direction[1];
+
+                if (nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]) {
+                    List<int[]> newPath = new ArrayList<>(current.path);
+                    newPath.add(new int[]{r, c});
+                    stack.push(new LengthPathPosition(current.length + grid[nr][nc], newPath, nr, nc));
                 }
             }
         }
 
-
         return false;
     }
+
+
+
+
+
 
     //estimate for astar, can be changed maybe, perhaps should average cost of path so far and multiply, or maybe avg cost of graph
     public int getEstimate(int[] pos, int[] end){
@@ -365,10 +385,10 @@ public class GraphAlgorithms {
     }
 
     //time slept should maybe be changed based on size of grid? maybe also slower so easier to see
-    public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored, int n) throws InterruptedException {
+    public void buildAndSendString(List<int[]> explored, List<int[]> path, String status, int cost, int numExplored, int n, String id) throws InterruptedException {
         Thread.sleep(TIME/(n*n));
         String s = createSendBackString(explored, path, status, cost, numExplored);
-        sendUpdateToFrontend(s);
+        sendUpdateToFrontend(s, id);
     }
 
     public void getStartAndEnd(int[] start, int[] end, int[][] grid, int n){
@@ -390,9 +410,9 @@ public class GraphAlgorithms {
 
 
     // Method to send update to the frontend via WebSocket
-    private void sendUpdateToFrontend(String value) {
+    private void sendUpdateToFrontend(String value, String id) {
         if (webSocketHandler != null) {
-            webSocketHandler.sendUpdate(value);
+            webSocketHandler.sendUpdate(value, id);
         }
     }
 
@@ -451,6 +471,156 @@ public class GraphAlgorithms {
 //        else{
 //            //do smth maybe
 //        }
+//    }
+
+
+    //recursive randomdfs
+//    public List<int[]> randomDfsParent(int[][] grid, String id, boolean real) throws InterruptedException {
+//        int n = grid.length;
+//
+//        int[] start = new int[2];
+//        int[] end = new int[2];
+//
+//        getStartAndEnd(start, end, grid, n);
+//
+//        List<int[]> explored = new ArrayList<>();
+//        boolean[][] seen = new boolean[n][n];
+//
+//        boolean solved = false;
+//        List<int[]> finalPath = new ArrayList<>();
+//        int[] finalCost = new int[1];
+//
+//        for(int r = 0; r < n; r++){
+//            for(int c = 0; c < n; c++){
+//                if(grid[r][c] == 10_000){
+//                    seen[r][c] = true;
+//                }
+//            }
+//        }
+//
+//        solved = randomDfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost, id, real);
+//
+//        if(real){
+//            if(solved){
+//                buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n, id);
+//            }
+//            else{
+//                buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n, id);
+//            }
+//        }
+//
+//        return finalPath;
+//
+//    }
+//
+//    public boolean randomDfs(int[][] grid, LengthPathPosition current, List<int[]> explored, boolean[][] seen, List<int[]> finalPath, int[] end, int n, int[] finalCost, String id, boolean real) throws InterruptedException {
+//        int r = current.r;
+//        int c = current.c;
+//
+//
+//        seen[r][c] = true;
+//        explored.add(new int[]{r, c});
+//
+//        if(real){
+//            buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
+//        }
+//
+//
+//        if(r == end[0] && c == end[1]){
+//            //we did it!
+//            finalPath.addAll(current.path);
+//            finalCost[0] = current.length;
+//            return true;
+//        }
+//
+//        List<int[]> directionList = new ArrayList<>();
+//        for(int[] direction: directions){
+//            directionList.add(new int[]{direction[0], direction[1]});
+//        }
+//        Collections.shuffle(directionList);
+//
+//        for(int[] direction: directionList){
+//            int nr = r + direction[0];
+//            int nc = c + direction[1];
+//
+//            if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
+//                LengthPathPosition next = new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc);
+//                if(randomDfs(grid, next, explored, seen, finalPath, end, n, finalCost, id, real)){
+//                    return true;
+//                }
+//            }
+//        }
+//
+//
+//        return false;
+//    }
+
+    //recursive normal dfs
+//    public void dfsParent(int[][] grid, String id) throws InterruptedException {
+//        int n = grid.length;
+//
+//        int[] start = new int[2];
+//        int[] end = new int[2];
+//
+//        getStartAndEnd(start, end, grid, n);
+//
+//        List<int[]> explored = new ArrayList<>();
+//        boolean[][] seen = new boolean[n][n];
+//
+//        boolean solved = false;
+//        List<int[]> finalPath = new ArrayList<>();
+//        int[] finalCost = new int[1];
+//
+//        for(int r = 0; r < n; r++){
+//            for(int c = 0; c < n; c++){
+//                if(grid[r][c] == 10_000){
+//                    seen[r][c] = true;
+//                }
+//            }
+//        }
+//
+//        solved = dfs(grid, new LengthPathPosition(0, new ArrayList<>(), start[0], start[1]), explored, seen, finalPath, end, n, finalCost, id);
+//
+//        if(solved){
+//            buildAndSendString(explored, finalPath, "solved", finalCost[0], explored.size(), n, id);
+//        }
+//        else{
+//            buildAndSendString(explored, finalPath, "failed", finalCost[0], explored.size(), n, id);
+//        }
+//
+//
+//    }
+//
+//    public boolean dfs(int[][] grid, LengthPathPosition current, List<int[]> explored, boolean[][] seen, List<int[]> finalPath, int[] end, int n, int[] finalCost, String id) throws InterruptedException {
+//        int r = current.r;
+//        int c = current.c;
+//
+//
+//        seen[r][c] = true;
+//        explored.add(new int[]{r, c});
+//
+//        buildAndSendString(explored, current.path, "inProgress", current.length, explored.size(), n, id);
+//
+//        if(r == end[0] && c == end[1]){
+//            //we did it!
+//            finalPath.addAll(current.path);
+//            finalCost[0] = current.length;
+//            return true;
+//        }
+//
+//        for(int[] direction: directions){
+//            int nr = r + direction[0];
+//            int nc = c + direction[1];
+//
+//            if(nr >= 0 && nr < n && nc >= 0 && nc < n && !seen[nr][nc]){
+//                LengthPathPosition next = new LengthPathPosition(current.length + grid[nr][nc], current.path, nr, nc);
+//                if(dfs(grid, next, explored, seen, finalPath, end, n, finalCost, id)){
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
 //    }
 
 
