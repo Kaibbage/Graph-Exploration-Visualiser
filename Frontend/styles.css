@@ -78,9 +78,10 @@ body {
 }
 
 .yellow {
-    background-color: #fbbc05;
+    background-color: rgb(245, 245, 27); 
     color: black;
 }
+
 
 .white {
     background-color: white;
@@ -173,7 +174,7 @@ button:active {
 }
 
 #yellowModeBtn.active-mode {
-    background-color: #fbbc05;
+    background-color: yellow;
     color: black;
 }
 
