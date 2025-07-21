@@ -1,11 +1,8 @@
 package org.GraphExplore;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-import static org.GraphExplore.Constants.RUNS_DIVISOR;
-import static org.GraphExplore.Constants.SIZE_DIVISOR;
+import static org.GraphExplore.Constants.*;
 
 public class Randomizer {
     private GraphAlgorithms graphAlgorithms;
@@ -17,6 +14,7 @@ public class Randomizer {
         intToColour.put(1, "yellow");
         intToColour.put(2, "red");
         intToColour.put(3, "blue");
+        intToColour.put(4, "black");
     }
 
     public static String[][] createInitialBoard(int n){
@@ -84,8 +82,10 @@ public class Randomizer {
     }
 
     public void generateSquare(String[][] grid, int n, int r, int c){
-        int size = getRandom(2, 2 + n/SIZE_DIVISOR);
-        String colour = intToColour.get(getRandom(1, 3));
+        int min = (Math.max(2, n/SIZE_DIVISOR/2));
+        int max = min + n/SIZE_DIVISOR/2 + 1;
+        int size = getRandom(min, max);
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
         for(int i = r; i < r + size; i++){
             for(int j = c; j < c +size; j++){
                 int row = r + i;
@@ -98,9 +98,11 @@ public class Randomizer {
     }
 
     public void generateRectangle(String[][] grid, int n, int r, int c){
-        int width = getRandom(1, 1 + n/SIZE_DIVISOR);
-        int height = getRandom(1, 1 + n/SIZE_DIVISOR);
-        String colour = intToColour.get(getRandom(1, 3));
+        int min = (Math.max(2, n/SIZE_DIVISOR/2));
+        int max = min + n/SIZE_DIVISOR/2 + 1;
+        int width = getRandom(min, max);
+        int height = getRandom(min, max);
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
         for(int i = r; i < r + height; i++){
             for(int j = c; j < c +width; j++){
                 int row = r + i;
@@ -113,8 +115,10 @@ public class Randomizer {
     }
 
     public void generateStairs(String[][] grid, int n, int r, int c){
-        int size = getRandom(2, 2 + n/SIZE_DIVISOR);
-        String colour = intToColour.get(getRandom(1, 3));
+        int min = (Math.max(2, n/SIZE_DIVISOR/2));
+        int max = min + n/SIZE_DIVISOR/2 + 1;
+        int size = getRandom(min, max);
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
 
         for (int i = 0; i < size; i++){
             for (int j = 0; j <= i; j++){
@@ -128,8 +132,10 @@ public class Randomizer {
     }
 
     public void generateTriangle(String[][] grid, int n, int r, int c) {
-        int size = getRandom(2, 2 + n / SIZE_DIVISOR);
-        String colour = intToColour.get(getRandom(1, 3));
+        int min = (Math.max(2, n/SIZE_DIVISOR/2));
+        int max = min + n/SIZE_DIVISOR/2 + 1;
+        int size = getRandom(min, max);
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
 
         for (int i = 0; i < size; i++) {
             int row = r - i;
@@ -145,9 +151,12 @@ public class Randomizer {
     }
 
     public void generateZigZag(String[][] grid, int n, int r, int c) {
-        int length = getRandom(3, (int) (3 + n / (SIZE_DIVISOR/1.5)));
+        int min = (Math.max(2, n/SIZE_DIVISOR/2));
+        int max = (int) (min + (double) n /SIZE_DIVISOR/1.5) + 1;
+
+        int length = getRandom(min, max);
         int thickness = getRandom(1, Math.max(1, n / (4*SIZE_DIVISOR)));
-        String colour = intToColour.get(getRandom(1, 3));
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
 
         int row = r;
         int col = c;
@@ -181,8 +190,45 @@ public class Randomizer {
         }
     }
 
+    public void generateRandomDfsShapeParent(String[][] grid, int n, int r, int c){
+        int size = n/SIZE_DIVISOR * 5;
+        String colour = intToColour.get(getRandom(1, NUM_COLOURS));
+        generateRandomDfsShape(grid, r, c, n, size, new boolean[n][n], new ArrayList<>(), colour);
+    }
+
+    public void generateRandomDfsShape(String[][] grid, int r, int c, int n, int size, boolean[][] seen, List<int[]> shape, String colour){
+        if(r < 0 || r >= n || c < 0 || c >= n || seen[r][c]){
+            return;
+        }
+
+        seen[r][c] = true;
+        if(grid[r][c].equals("white")){
+            grid[r][c] = colour;
+        }
+
+        shape.add(new int[]{r, c});
+
+        if(shape.size() >= size){
+            return;
+        }
+
+        List<int[]> directionList = new ArrayList<>();
+        for(int[] direction : directions){
+            directionList.add(new int[]{direction[0], direction[1]});
+        }
+        Collections.shuffle(directionList);
+
+        for(int[] direction : directionList){
+            int nr = r + direction[0];
+            int nc = c + direction[1];
+
+            generateRandomDfsShape(grid, nr, nc, n, size, seen, shape, colour);
+        }
+
+    }
+
     public void pickAShape(String[][] grid, int n){
-        int shapeNum = getRandom(0, 4);
+        int shapeNum = getRandom(0, 9);
         int r = getRandom(0, n-1);
         int c = getRandom(0, n-1);
 
@@ -203,6 +249,12 @@ public class Randomizer {
             case 4:
                 generateZigZag(grid, n, r, c);
                 break;
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+                generateRandomDfsShapeParent(grid, n, r, c);
             default:
                 break;
         }
@@ -216,8 +268,8 @@ public class Randomizer {
 
     public String[][] getRandomGridStructured(int n) throws InterruptedException {
         String[][] grid = createInitialBoard(n);
-        int min = 2;
-        int max = min + n/RUNS_DIVISOR;
+        int min = 1;
+        int max = min + n/RUNS_DIVISOR + 1;
         int numPaths = getRandom(min, max);
         int[] start = getRandomStartCoord(n);
         int[] end = getRandomEndCoord(n, start);
@@ -240,7 +292,10 @@ public class Randomizer {
             }
         }
 
-        for(int i = 0; i < getRandom(2, 2 + n/SIZE_DIVISOR); i++){
+        int minShapes = Math.max(2, (n/NUM_SHAPES_DIVISOR)/2);
+        int maxShapes = minShapes + (n/NUM_SHAPES_DIVISOR)/2 + 3;
+
+        for(int i = 0; i < getRandom(minShapes, maxShapes); i++){
             pickAShape(grid, n);
         }
 

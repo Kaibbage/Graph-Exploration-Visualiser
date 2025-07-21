@@ -7,22 +7,23 @@ body {
     background-color: #d0f8ce44;
     font-family: sans-serif;
     touch-action: manipulation;
+    overflow: hidden;
 }
 
 .container {
     display: flex;
     gap: 20px;
     align-items: flex-start;
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: 20px;
-    margin-left: 500px;
+    margin-left: 450px;
 }
 
 .grid {
     display: grid;
-    width: 720px;
-    height: 720px;
+    width: 800px;
+    height: 800px;
     gap: 0;
     touch-action: none;
 }
@@ -341,7 +342,7 @@ label {
     gap: 20px;
     z-index: 1000;
     height: 1000px;
-    width: 340px;
+    width: 300px;
 }
 
 .status-container {
@@ -392,7 +393,7 @@ label {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgba(0,0,0,0.15);
-    width: 400px;
+    width: 300px;
     height: 250px;
     top: 60%;
     left: 50%;

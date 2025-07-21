@@ -5,7 +5,11 @@ public class Constants {
 
     public static final int TIME = 10_000; //ms that i want it to take
 
-    public static final int SIZE_DIVISOR = 2;
+    public static final int SIZE_DIVISOR = 4;
 
-    public static final int RUNS_DIVISOR = 20;
+    public static final int NUM_SHAPES_DIVISOR = 4;
+
+    public static final int RUNS_DIVISOR = 30;
+
+    public static final int NUM_COLOURS = 3;
 }
