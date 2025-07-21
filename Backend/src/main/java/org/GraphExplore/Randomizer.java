@@ -270,7 +270,7 @@ public class Randomizer {
     public String[][] getRandomGridStructured(int n) throws InterruptedException {
         String[][] grid = createInitialBoard(n);
         int min = 1;
-        int max = min + n/RUNS_DIVISOR + 1;
+        int max = min + Math.min(n/RUNS_DIVISOR, 1) + 1;
         int numPaths = getRandom(min, max);
         int[] start = getRandomStartCoord(n);
         int[] end = getRandomEndCoord(n, start);
@@ -294,7 +294,7 @@ public class Randomizer {
         }
 
         int minShapes = Math.max(2, (n/NUM_SHAPES_DIVISOR)/2);
-        int maxShapes = minShapes + (n/NUM_SHAPES_DIVISOR)/2 + 3;
+        int maxShapes = minShapes + (n/NUM_SHAPES_DIVISOR)/2 + 1;
 
         for(int i = 0; i < getRandom(minShapes, maxShapes); i++){
             pickAShape(grid, n);
