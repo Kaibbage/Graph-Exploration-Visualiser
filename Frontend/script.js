@@ -167,6 +167,8 @@ async function getRandomGridFromBackend() {
         id: uniqueId
      };
 
+     disableMainButtons();
+
     try {
         const response = await fetch(`${apiBaseUrl}/get-random-grid`, {
             method: "POST",
@@ -179,9 +181,11 @@ async function getRandomGridFromBackend() {
         const result = await response.text(); // Extract result
 
         fillGrid(result);
+        enableMainButtons();
 
     } catch (error) {
         console.error("Error:", error);
+        enableMainButtons();
         throw error; //throw error if needed
     }
 }
@@ -571,7 +575,7 @@ function enableMainButtons(){
 }
 
 function initialize(){
-    disabled = true;
+    disableMainButtons();
     timeToReady = 120;
     //tracking state of pointer for functions that need it
     document.addEventListener('pointerdown', () => { isPointerDown = true; });

@@ -227,6 +227,7 @@ public class Randomizer {
 
     }
 
+    //maybe random dfs should have more probaility of being picked than 50%?
     public void pickAShape(String[][] grid, int n){
         int shapeNum = getRandom(0, 9);
         int r = getRandom(0, n-1);
