@@ -9,7 +9,7 @@ public class Constants {
 
     public static final int NUM_SHAPES_DIVISOR = 4;
 
-    public static final int RUNS_DIVISOR = 30; //anyone under this gets 1 to 2, anyone over this gets 1 to 3
+    public static final int RUNS_DIVISOR = 101; //anyone under this gets 1 to 2, anyone over this gets 1 to 3
 
     public static final int NUM_COLOURS = 3;
 }
