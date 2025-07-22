@@ -272,7 +272,7 @@ function clearAllCircles() {
         return;
     }
     document.querySelectorAll('.cell.green-circle, .cell.dark-green-circle').forEach(cell => {
-        cell.classList.remove('green-circle', 'dark-green-circle');
+        cell.classList.remove('green-circle', 'dark-green-circle', 'green-circle-border');
     });
 
     resetStats();
@@ -280,7 +280,7 @@ function clearAllCircles() {
 
 
 function clearCell(cell){
-    cell.classList.remove('black', 'blue', 'red', 'yellow', 'orange', 'purple','green-circle', 'dark-green-circle');
+    cell.classList.remove('black', 'blue', 'red', 'yellow', 'orange', 'purple','green-circle', 'dark-green-circle', 'green-circle-border');
     cell.dataset.color = 'white';
 }
 
@@ -317,14 +317,13 @@ function updateCellColor(cell, color) {
 
 function addGreenCircle(cell) {
     cell.classList.remove('dark-green-circle');
-    cell.classList.add('green-circle');
+    cell.classList.add('green-circle', 'green-circle-border');
 }
 
 function addDarkGreenCircle(cell) {
-    cell.classList.remove('green-circle');
+    cell.classList.remove('green-circle', 'green-circle-border');
     cell.classList.add('dark-green-circle');
 }
-
 function colorPointerDown(e) {
     if(disabled){
         return;
