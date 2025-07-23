@@ -51,6 +51,7 @@ body {
     pointer-events: none;
 }
 
+/* consider colours for this guy, grey too light, but dark green too prominent and similar? */
 .cell.dark-green-circle::after {
     content: '';
     position: absolute;
