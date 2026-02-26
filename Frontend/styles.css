@@ -363,7 +363,7 @@ label {
 #solveButtonDijkstra:active, 
 #solveButtonAstar:active, 
 #solveButtonBFS:active, 
-#solveButtonDFS:active, 
+#solveButtonDFS:active, 5
 #solveButtonRandomDFS:active {
     background-color: #a5d6a7;
     transform: scale(0.98);
@@ -460,7 +460,7 @@ label {
     border-radius: 4px;
     cursor: pointer;
     width: 50%;
-    height: 30%;
+    height: 25%;
     transition: background-color 0.3s;
     
     position: absolute;
