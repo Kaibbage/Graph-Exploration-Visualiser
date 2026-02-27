@@ -8,13 +8,14 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 @Component  // Ensures it's a singleton Spring bean
 public class GraphExploreWebSocketHandler extends TextWebSocketHandler {
 
     private final Set<WebSocketSession> sessions = new CopyOnWriteArraySet<>();
-    private HashMap<String, WebSocketSession> idToSession = new HashMap<>();
+    private ConcurrentHashMap<String, WebSocketSession> idToSession = new ConcurrentHashMap<>();
 
     public GraphExploreWebSocketHandler() {
         System.out.println("SudokuSolverWebSocketHandler instance created: " + this);
